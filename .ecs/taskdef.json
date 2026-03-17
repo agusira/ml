@@ -1,0 +1,108 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:462755081043:task-definition/techmart-task-eastjava-agus:12",
+    "containerDefinitions": [
+        {
+            "name": "techmart-container",
+            "image": "462755081043.dkr.ecr.us-east-1.amazonaws.com/techmart-ecr-eastjava-agus",
+            "cpu": 0,
+            "links": [],
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 5000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [],
+            "command": [],
+            "environment": [
+                {
+                    "name": "AWS_SESSION_TOKEN",
+                    "value": "<aws_session_token>"
+                },
+                {
+                    "name": "FLASK_DEBUG",
+                    "value": "true"
+                },
+                {
+                    "name": "AWS_ACCESS_KEY_ID",
+                    "value": "<aws_access_key_id>"
+                },
+                {
+                    "name": "FORECAST_API_URL",
+                    "value": "https://rt7vxl9v99.execute-api.us-east-1.amazonaws.com/production"
+                },
+                {
+                    "name": "AWS_SECRET_ACCESS_KEY",
+                    "value": "<aws_secret_access_key>"
+                },
+                {
+                    "name": "PREDICTION_API_URL",
+                    "value": "https://rt7vxl9v99.execute-api.us-east-1.amazonaws.com/production"
+                },
+                {
+                    "name": "FLASK_HOST",
+                    "value": "0.0.0.0"
+                },
+                {
+                    "name": "API_GATEWAY_KEY",
+                    "value": "123456789012345678890"
+                },
+                {
+                    "name": "FLASK_PORT",
+                    "value": "5000"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [],
+            "dnsServers": [],
+            "dnsSearchDomains": [],
+            "extraHosts": [],
+            "dockerSecurityOptions": [],
+            "dockerLabels": {},
+            "ulimits": [],
+            "systemControls": [],
+            "credentialSpecs": []
+        }
+    ],
+    "family": "techmart-task-eastjava-agus",
+    "executionRoleArn": "arn:aws:iam::462755081043:role/LabRole",
+    "networkMode": "awsvpc",
+    "revision": 12,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE",
+        "MANAGED_INSTANCES"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
+    "registeredAt": "2026-03-17T04:59:17.995Z",
+    "registeredBy": "arn:aws:sts::462755081043:assumed-role/LabRole/AWSCloudFormation",
+    "tags": []
+}

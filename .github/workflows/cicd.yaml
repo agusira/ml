@@ -9,9 +9,9 @@ env:
   ECR_REPOSITORY: techmart-ecr-eastjava-agus           # set this to your Amazon ECR repository name
   ECS_SERVICE: techmart-service-eastjava-agus                 # set this to your Amazon ECS service name
   ECS_CLUSTER: techmart-cluster-eastjava-agus                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: .ecs/taskdef.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
+  CONTAINER_NAME: techmart-container           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 permissions:
@@ -49,7 +49,29 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         cd newfront
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+    - name: fill taskdef secret
+      run: |
+        sed -i "s|<aws_access_key_id>|${{secrets.AWS_ACCESS_KEY_ID}}|g" .ecs/taskdef.json
+        sed -i "s|<aws_secret_access_key>|${{secrets.AWS_SECRET_ACCESS_KEY}}|g" .ecs/taskdef.json
+        sed -i "s|<aws_session_token>|${{secrets.AWS_SESSION_TOKEN}}|g" .ecs/taskdef.json
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        codedeploy-appspec: appspec.yaml
+        codedeploy-application: techmart-codedeploy-app-eastjava-agus
+        codedeploy-deployment-group: techmart-deployment-group-eastjava-agus
