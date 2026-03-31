@@ -62,15 +62,15 @@ user_features = users_df.join(user_behavior, "user_id", "left")
 
 # Save processed data
 user_item_matrix.write.mode("overwrite").parquet(
-    "s3://yourbucket/processed-data/user_item_matrix/"
+    "s3://techmart-ml-eastjava-agus/processed-data/user_item_matrix/"
 )
 
 product_stats.write.mode("overwrite").parquet(
-    "s3://yourbucket/processed-data/product_stats/"
+    "s3://techmart-ml-eastjava-agus/processed-data/product_stats/"
 )
 
 user_features.write.mode("overwrite").parquet(
-    "s3://yourbucket/processed-data/user_features/"
+    "s3://techmart-ml-eastjava-agus/processed-data/user_features/"
 )
 
 job.commit()
